@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Report — PHO£NIX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #060a0f;
+      --bg2: #0b1118;
+      --bg3: #0f1820;
+      --green: #00ff88;
+      --green-dim: #00ff8840;
+      --amber: #ffb300;
+      --red: #ff3c5a;
+      --blue: #00c8ff;
+      --text: #c8d8e8;
+      --text-dim: #607080;
+      --border: #1a2a3a;
+      --card: #0d1620;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 18px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(16px);
+      background: rgba(6,10,15,0.85);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--green);
+      letter-spacing: 2px;
+      text-decoration: none;
+      text-shadow: 0 0 20px var(--green);
+    }
+
+    .nav-back {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-back:hover { color: var(--green); }
+
+    /* MAIN */
+    main {
+      position: relative;
+      z-index: 2;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 120px 40px 80px;
+    }
+
+    /* REPORT HEADER */
+    .report-header {
+      margin-bottom: 48px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .report-breadcrumb {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .report-breadcrumb a {
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    .report-breadcrumb a:hover { text-decoration: underline; }
+
+    .report-severity-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .sev-badge {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      padding: 5px 12px;
+      border: 1px solid;
+      text-transform: uppercase;
+    }
+
+    .sev-critical { color: var(--red); border-color: var(--red); background: rgba(255,60,90,0.08); }
+    .sev-high { color: var(--amber); border-color: var(--amber); background: rgba(255,179,0,0.08); }
+    .sev-medium { color: var(--blue); border-color: var(--blue); background: rgba(0,200,255,0.08); }
+    .sev-low { color: var(--green); border-color: var(--green); background: rgba(0,255,136,0.08); }
+    .sev-info { color: var(--text-dim); border-color: var(--border); }
+
+    .status-badge {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      padding: 5px 12px;
+      border: 1px solid;
+      text-transform: uppercase;
+    }
+
+    .status-submitted { color: var(--amber); border-color: var(--amber); }
+    .status-triaged { color: var(--blue); border-color: var(--blue); }
+    .status-resolved { color: var(--green); border-color: var(--green); }
+    .status-informative { color: var(--text-dim); border-color: var(--border); }
+    .status-na { color: var(--text-dim); border-color: var(--border); }
+
+    .report-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(22px, 4vw, 36px);
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .report-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 2px;
+      margin-top: 24px;
+    }
+
+    .meta-cell {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 14px 20px;
+    }
+
+    .meta-key {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--green);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .meta-val {
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    /* CVSS */
+    .cvss-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 28px;
+      margin-bottom: 40px;
+    }
+
+    .cvss-score {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .cvss-number {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 52px;
+      line-height: 1;
+    }
+
+    .cvss-number.critical { color: var(--red); text-shadow: 0 0 30px rgba(255,60,90,0.4); }
+    .cvss-number.high { color: var(--amber); text-shadow: 0 0 30px rgba(255,179,0,0.4); }
+    .cvss-number.medium { color: var(--blue); text-shadow: 0 0 30px rgba(0,200,255,0.4); }
+    .cvss-number.low { color: var(--green); text-shadow: 0 0 30px rgba(0,255,136,0.4); }
+
+    .cvss-info { flex: 1; }
+
+    .cvss-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .cvss-vector {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      color: var(--text-dim);
+      word-break: break-all;
+    }
+
+    .cvss-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 2px;
+    }
+
+    .cvss-metric {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+    }
+
+    .cvss-metric-key {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 1px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .cvss-metric-val {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      color: var(--amber);
+    }
+
+    /* SECTION BLOCKS */
+    .report-section {
+      margin-bottom: 48px;
+    }
+
+    .section-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--green);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    .section-body {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 28px;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.8;
+      white-space: pre-wrap;
+    }
+
+    .section-body.empty {
+      color: var(--text-dim);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    /* STEPS */
+    .steps-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .step-row {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .step-row:last-child { border-bottom: none; }
+
+    .step-num {
+      width: 48px;
+      flex-shrink: 0;
+      padding: 18px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      color: var(--green);
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .step-text {
+      padding: 18px 24px;
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.7;
+      flex: 1;
+    }
+
+    /* CODE BLOCKS */
+    .code-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--green);
+      padding: 20px 24px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      color: var(--green);
+      overflow-x: auto;
+      white-space: pre;
+      margin: 16px 0;
+    }
+
+    /* TIMELINE */
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: linear-gradient(180deg, var(--green), var(--border));
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 28px;
+    }
+
+    .timeline-item:last-child { margin-bottom: 0; }
+
+    .timeline-dot {
+      position: absolute;
+      left: -29px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border: 2px solid var(--green);
+      background: var(--bg);
+      border-radius: 50%;
+    }
+
+    .timeline-dot.filled {
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    .timeline-date {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: var(--green);
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .timeline-event {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .timeline-note {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* SCREENSHOTS */
+    .screenshots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2px;
+    }
+
+    .screenshot-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .screenshot-img {
+      width: 100%;
+      display: block;
+      max-height: 220px;
+      object-fit: cover;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .screenshot-img:hover { opacity: 0.85; }
+
+    .screenshot-caption {
+      padding: 12px 16px;
+      font-size: 12px;
+      color: var(--text-dim);
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    /* LIGHTBOX */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 9998;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .lightbox.open { display: flex; }
+
+    .lightbox img {
+      max-width: 100%;
+      max-height: 90vh;
+      object-fit: contain;
+      border: 1px solid var(--border);
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 24px;
+      right: 32px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 14px;
+      color: var(--text-dim);
+      cursor: pointer;
+      letter-spacing: 2px;
+      z-index: 9999;
+      transition: color 0.2s;
+    }
+
+    .lightbox-close:hover { color: var(--green); }
+
+    /* NOT FOUND */
+    .not-found {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .not-found-code {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 80px;
+      color: var(--green);
+      opacity: 0.2;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .not-found-msg {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 14px;
+      color: var(--text-dim);
+      letter-spacing: 2px;
+      margin-bottom: 32px;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid var(--green);
+      color: var(--green);
+      display: inline-block;
+      transition: all 0.2s;
+    }
+
+    .btn:hover { background: var(--green); color: #000; }
+
+    /* NO WRITEUP */
+    .no-writeup {
+      background: var(--card);
+      border: 1px dashed var(--border);
+      padding: 48px;
+      text-align: center;
+    }
+
+    .no-writeup-title {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+
+    .no-writeup-sub {
+      font-size: 13px;
+      color: var(--text-dim);
+      opacity: 0.6;
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      main { padding: 100px 20px 60px; }
+      .report-meta-grid { grid-template-columns: 1fr 1fr; }
+      .cvss-number { font-size: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">PHO£NIX</a>
+  <a href="index.html#findings" class="nav-back">← Back to Findings</a>
+</nav>
+
+<main id="main">
+  <!-- populated by JS -->
+</main>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lightbox-close" onclick="closeLightbox()">✕ CLOSE</div>
+  <img id="lightboxImg" src="" alt=""/>
+</div>
+
+<script>
+  const DATA_KEY = 'phoenix_portfolio_data';
+
+  const DEFAULT_DATA = {
+    stats: { bugs: 5, programs: 4, skills: 8, hours: 200 },
+    skills: [],
+    findings: [
+      { title: "Stored HTML Injection / Blind XSS — Account Name Fields", program: "Trip.com", platform: "HackerOne", severity: "medium", status: "submitted", date: "2025", desc: "HTML injection via localFirstName/localLastName in the saveUserInfo API. Blind XSS payload deployed via js.rip. returnCode:0 confirmed payload stored on us.trip.com." },
+      { title: "Reflected Parameter in __NEXT_DATA__ — curr Parameter", program: "Trip.com", platform: "HackerOne", severity: "low", status: "submitted", date: "2025", desc: "The curr query parameter is reflected unsanitized into the __NEXT_DATA__ JSON blob on response pages. Low severity, no direct execution path confirmed." },
+      { title: "Stored HTML Injection — Trip Moments Title/Body", program: "Trip.com", platform: "HackerOne", severity: "low", status: "submitted", date: "2025", desc: "HTML stored raw in __NEXT_DATA__ via Trip Moments title and body fields. HTML-encoded at render, limiting exploitability, but injection point confirmed." },
+      { title: "AWS Infrastructure Disclosure via GitHub Repo", program: "Infinite Athlete", platform: "Bugcrowd", severity: "medium", status: "informative", date: "2025", desc: "Hardcoded AWS account ID, IAM role ARNs, CloudFront distribution ID, and internal API URL discovered in the tempus-ex GitHub organisation. Closed as N/A by triage; appeal filed." },
+      { title: "Unvalidated Redirect in Password Reset — destination Param", program: "Infinite Athlete", platform: "Bugcrowd", severity: "low", status: "submitted", date: "2025", desc: "Password reset endpoint accepted arbitrary external URLs in the destination parameter without validation, enabling open redirect." }
+    ],
+    progress: [],
+    programs: []
+  };
+
+  function loadData() {
+    try {
+      const raw = localStorage.getItem(DATA_KEY);
+      return raw ? JSON.parse(raw) : DEFAULT_DATA;
+    } catch(e) { return DEFAULT_DATA; }
+  }
+
+  function getParam(name) {
+    return new URLSearchParams(window.location.search).get(name);
+  }
+
+  function sev(s) {
+    return { critical:'critical', high:'high', medium:'medium', low:'low', info:'info' }[s] || 'info';
+  }
+
+  function statusClass(s) {
+    return { submitted:'submitted', triaged:'triaged', resolved:'resolved', informative:'informative', na:'na' }[s] || 'submitted';
+  }
+
+  function cvssClass(score) {
+    const n = parseFloat(score);
+    if (n >= 9) return 'critical';
+    if (n >= 7) return 'high';
+    if (n >= 4) return 'medium';
+    return 'low';
+  }
+
+  function renderSteps(text) {
+    if (!text || !text.trim()) return '';
+    const lines = text.trim().split('\n').filter(l => l.trim());
+    return `<div class="steps-block">${lines.map((line, i) => `
+      <div class="step-row">
+        <div class="step-num">${String(i+1).padStart(2,'0')}</div>
+        <div class="step-text">${escHtml(line)}</div>
+      </div>
+    `).join('')}</div>`;
+  }
+
+  function renderTimeline(items) {
+    if (!items || !items.length) return '';
+    return `<div class="timeline">${items.map((item, i) => `
+      <div class="timeline-item">
+        <div class="timeline-dot ${i === 0 ? 'filled' : ''}"></div>
+        <div class="timeline-date">${escHtml(item.date || '')}</div>
+        <div class="timeline-event">${escHtml(item.event || '')}</div>
+        ${item.note ? `<div class="timeline-note">${escHtml(item.note)}</div>` : ''}
+      </div>
+    `).join('')}</div>`;
+  }
+
+  function renderScreenshots(items) {
+    if (!items || !items.length) return '';
+    return `<div class="screenshots-grid">${items.map(s => `
+      <div class="screenshot-item">
+        <img class="screenshot-img" src="${escAttr(s.url)}" alt="${escAttr(s.caption||'')}" onclick="openLightbox('${escAttr(s.url)}')"/>
+        ${s.caption ? `<div class="screenshot-caption">// ${escHtml(s.caption)}</div>` : ''}
+      </div>
+    `).join('')}</div>`;
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function escAttr(s) {
+    return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  function renderNoWriteup() {
+    return `
+      <div class="no-writeup">
+        <div class="no-writeup-title">// WRITE-UP NOT YET PUBLISHED</div>
+        <div class="no-writeup-sub">Add the full write-up from the admin panel.</div>
+      </div>
+    `;
+  }
+
+  function render() {
+    const id = parseInt(getParam('id'));
+    const d = loadData();
+    const main = document.getElementById('main');
+
+    if (isNaN(id) || id < 0 || id >= d.findings.length) {
+      main.innerHTML = `
+        <div class="not-found">
+          <div class="not-found-code">404</div>
+          <div class="not-found-msg">// Report not found</div>
+          <a href="index.html#findings" class="btn">← Back to Findings</a>
+        </div>
+      `;
+      return;
+    }
+
+    const f = d.findings[id];
+    const w = f.writeup || {};
+    document.title = `${f.title} — PHO£NIX`;
+
+    const hasWriteup = w.description || w.steps || w.impact || w.screenshots?.length || w.timeline?.length || w.cvss;
+
+    // CVSS block
+    let cvssHtml = '';
+    if (w.cvss) {
+      const cv = w.cvss;
+      cvssHtml = `
+        <div class="report-section">
+          <div class="section-label">CVSS Score</div>
+          <div class="cvss-block">
+            <div class="cvss-score">
+              <div class="cvss-number ${cvssClass(cv.score)}">${cv.score || '—'}</div>
+              <div class="cvss-info">
+                <div class="cvss-label">CVSS v3.1 Base Score</div>
+                ${cv.vector ? `<div class="cvss-vector">${escHtml(cv.vector)}</div>` : ''}
+              </div>
+            </div>
+            ${(cv.metrics && cv.metrics.length) ? `
+            <div class="cvss-metrics">
+              ${cv.metrics.map(m => `
+                <div class="cvss-metric">
+                  <div class="cvss-metric-key">${escHtml(m.key)}</div>
+                  <div class="cvss-metric-val">${escHtml(m.val)}</div>
+                </div>
+              `).join('')}
+            </div>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    main.innerHTML = `
+      <div class="report-header">
+        <div class="report-breadcrumb">
+          <a href="index.html">PHO£NIX</a> / <a href="index.html#findings">Findings</a> / Report #${String(id+1).padStart(3,'0')}
+        </div>
+        <div class="report-severity-row">
+          <span class="sev-badge sev-${sev(f.severity)}">${f.severity}</span>
+          <span class="status-badge status-${statusClass(f.status)}">${f.status}</span>
+        </div>
+        <h1 class="report-title">${escHtml(f.title)}</h1>
+        <div class="report-meta-grid">
+          <div class="meta-cell"><div class="meta-key">Program</div><div class="meta-val">${escHtml(f.program)}</div></div>
+          <div class="meta-cell"><div class="meta-key">Platform</div><div class="meta-val">${escHtml(f.platform)}</div></div>
+          <div class="meta-cell"><div class="meta-key">Year</div><div class="meta-val">${escHtml(f.date)}</div></div>
+          <div class="meta-cell"><div class="meta-key">Severity</div><div class="meta-val">${escHtml(f.severity)}</div></div>
+          <div class="meta-cell"><div class="meta-key">Status</div><div class="meta-val">${escHtml(f.status)}</div></div>
+          ${w.cvss ? `<div class="meta-cell"><div class="meta-key">CVSS Score</div><div class="meta-val">${escHtml(w.cvss.score)}</div></div>` : ''}
+        </div>
+      </div>
+
+      ${!hasWriteup ? renderNoWriteup() : `
+        ${cvssHtml}
+
+        ${w.description ? `
+        <div class="report-section">
+          <div class="section-label">Vulnerability Description</div>
+          <div class="section-body">${escHtml(w.description)}</div>
+        </div>` : ''}
+
+        ${w.steps ? `
+        <div class="report-section">
+          <div class="section-label">Steps to Reproduce</div>
+          ${renderSteps(w.steps)}
+        </div>` : ''}
+
+        ${w.impact ? `
+        <div class="report-section">
+          <div class="section-label">Impact</div>
+          <div class="section-body">${escHtml(w.impact)}</div>
+        </div>` : ''}
+
+        ${(w.screenshots && w.screenshots.length) ? `
+        <div class="report-section">
+          <div class="section-label">Evidence / Screenshots</div>
+          ${renderScreenshots(w.screenshots)}
+        </div>` : ''}
+
+        ${(w.timeline && w.timeline.length) ? `
+        <div class="report-section">
+          <div class="section-label">Timeline</div>
+          ${renderTimeline(w.timeline)}
+        </div>` : ''}
+      `}
+
+      <div style="margin-top:64px;padding-top:40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+        <a href="index.html#findings" class="btn">← All Findings</a>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:1px;">// PHO£NIX Security Research</span>
+      </div>
+    `;
+  }
+
+  function openLightbox(url) {
+    document.getElementById('lightboxImg').src = url;
+    document.getElementById('lightbox').classList.add('open');
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.getElementById('lightboxImg').src = '';
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  render();
+</script>
+</body>
+</html>

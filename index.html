@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PH£NIX | Cybersecurity Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #060a0f;
+      --bg2: #0b1118;
+      --bg3: #0f1820;
+      --green: #00ff88;
+      --green-dim: #00ff8840;
+      --green-glow: #00ff8820;
+      --amber: #ffb300;
+      --red: #ff3c5a;
+      --blue: #00c8ff;
+      --text: #c8d8e8;
+      --text-dim: #607080;
+      --border: #1a2a3a;
+      --card: #0d1620;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* SCANLINES OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* GRID BACKGROUND */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NOISE TEXTURE */
+    .noise {
+      position: fixed;
+      inset: 0;
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 1;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 18px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(16px);
+      background: rgba(6,10,15,0.85);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--green);
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px var(--green);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--green);
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--green); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* MAIN LAYOUT */
+    main { position: relative; z-index: 2; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 40px 80px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero-content { max-width: 700px; }
+
+    .hero-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: var(--green);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-tag::before {
+      content: '';
+      width: 32px;
+      height: 1px;
+      background: var(--green);
+    }
+
+    .hero-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(52px, 8vw, 88px);
+      line-height: 0.95;
+      color: #fff;
+      margin-bottom: 16px;
+      letter-spacing: -2px;
+    }
+
+    .hero-name .pound {
+      color: var(--green);
+      text-shadow: 0 0 30px var(--green), 0 0 60px var(--green-dim);
+    }
+
+    .hero-title {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 14px;
+      color: var(--amber);
+      margin-bottom: 32px;
+      letter-spacing: 3px;
+    }
+
+    .hero-desc {
+      font-size: 15px;
+      color: var(--text-dim);
+      max-width: 520px;
+      line-height: 1.8;
+      margin-bottom: 48px;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      border-color: var(--green);
+      color: #000;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--green);
+      box-shadow: 0 0 20px var(--green-dim);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--text-dim);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    /* TERMINAL BLINK */
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      background: var(--green);
+      margin-left: 4px;
+      vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* STATS BAR */
+    .stats-bar {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+      padding: 24px 40px;
+      display: flex;
+      justify-content: center;
+      gap: 64px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-val {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 32px;
+      color: var(--green);
+      text-shadow: 0 0 20px var(--green-dim);
+      display: block;
+    }
+
+    .stat-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-top: 4px;
+      display: block;
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 100px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      margin-bottom: 56px;
+    }
+
+    .section-num {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: var(--green);
+      letter-spacing: 3px;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(28px, 4vw, 42px);
+      color: #fff;
+      line-height: 1.1;
+    }
+
+    .section-line {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--green), transparent);
+      margin-top: 20px;
+    }
+
+    /* SKILLS GRID */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2px;
+    }
+
+    .skill-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 28px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--green);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+
+    .skill-card:hover { background: var(--bg3); border-color: var(--green-dim); }
+    .skill-card:hover::before { transform: scaleX(1); }
+
+    .skill-icon {
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+
+    .skill-name {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 13px;
+      color: #fff;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .skill-level {
+      height: 2px;
+      background: var(--border);
+      margin: 12px 0 8px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .skill-level-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), var(--blue));
+      border-radius: 2px;
+      transition: width 1.5s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    .skill-desc {
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* FINDINGS / BUGS */
+    .findings-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .finding-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 28px 32px;
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      gap: 24px;
+      align-items: start;
+      transition: all 0.3s;
+      cursor: default;
+    }
+
+    .finding-card:hover {
+      border-color: var(--green-dim);
+      background: var(--bg3);
+    }
+
+    .finding-severity {
+      text-align: center;
+      padding-top: 4px;
+    }
+
+    .sev-badge {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 1px;
+      padding: 4px 8px;
+      border: 1px solid;
+      text-transform: uppercase;
+    }
+
+    .sev-critical { color: var(--red); border-color: var(--red); background: rgba(255,60,90,0.08); }
+    .sev-high { color: var(--amber); border-color: var(--amber); background: rgba(255,179,0,0.08); }
+    .sev-medium { color: var(--blue); border-color: var(--blue); background: rgba(0,200,255,0.08); }
+    .sev-low { color: var(--green); border-color: var(--green); background: rgba(0,255,136,0.08); }
+    .sev-info { color: var(--text-dim); border-color: var(--border); }
+
+    .finding-body {}
+
+    .finding-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .finding-meta {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .finding-meta span { color: var(--green); }
+
+    .finding-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+
+    .finding-status {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1px;
+      padding: 4px 10px;
+      border: 1px solid;
+      white-space: nowrap;
+      align-self: start;
+    }
+
+    .status-submitted { color: var(--amber); border-color: var(--amber); }
+    .status-triaged { color: var(--blue); border-color: var(--blue); }
+    .status-resolved { color: var(--green); border-color: var(--green); }
+    .status-informative { color: var(--text-dim); border-color: var(--border); }
+    .status-na { color: var(--text-dim); border-color: var(--border); }
+
+    /* PROGRESS / LEARNING */
+    .progress-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2px;
+    }
+
+    .progress-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 28px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 16px;
+    }
+
+    .progress-name {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 13px;
+      color: #fff;
+      letter-spacing: 1px;
+    }
+
+    .progress-pct {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--green);
+    }
+
+    .progress-bar-track {
+      height: 3px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), var(--blue));
+      border-radius: 3px;
+      transition: width 1.5s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    .progress-note {
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* CTF / PROGRAMS */
+    .programs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 2px;
+    }
+
+    .program-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 28px;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .program-card:hover {
+      border-color: var(--green-dim);
+      transform: translateY(-2px);
+    }
+
+    .program-platform {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--green);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .program-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    .program-desc {
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .program-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      padding: 3px 8px;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .footer-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--green);
+      letter-spacing: 2px;
+    }
+
+    .footer-note {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--green); }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .about-text p {
+      color: var(--text-dim);
+      margin-bottom: 16px;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .about-text p strong { color: var(--text); }
+
+    .about-details {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .detail-row {
+      display: flex;
+      background: var(--card);
+      border: 1px solid var(--border);
+    }
+
+    .detail-key {
+      padding: 12px 20px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: var(--green);
+      letter-spacing: 1px;
+      width: 140px;
+      border-right: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .detail-val {
+      padding: 12px 20px;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      border: 1px dashed var(--border);
+      color: var(--text-dim);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 2px;
+    }
+
+    /* ANIMATIONS */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* PHOENIX BIRD */
+    .hero {
+      justify-content: space-between;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .phoenix-bird {
+      flex-shrink: 0;
+      opacity: 0.92;
+      position: relative;
+    }
+
+    /* Wing flap */
+    @keyframes wingLeft {
+      0%, 100% { transform: rotate(0deg) scaleY(1); }
+      50% { transform: rotate(-8deg) scaleY(0.92); }
+    }
+    @keyframes wingRight {
+      0%, 100% { transform: rotate(0deg) scaleY(1); }
+      50% { transform: rotate(8deg) scaleY(0.92); }
+    }
+    .wing-left { transform-origin: 195px 210px; animation: wingLeft 3s ease-in-out infinite; }
+    .wing-right { transform-origin: 225px 210px; animation: wingRight 3s ease-in-out infinite; }
+
+    /* Body & head pulse */
+    @keyframes bodyPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    .body-pulse { animation: bodyPulse 3s ease-in-out infinite; }
+
+    /* Feather waves */
+    @keyframes featherWave1 {
+      0%, 100% { d: path("M210,290 Q200,360 195,410"); opacity: 0.9; }
+      50% { d: path("M210,290 Q202,358 196,410"); opacity: 0.7; }
+    }
+    @keyframes featherDrift1 { 0%,100%{transform:translateX(0);} 50%{transform:translateX(-3px);} }
+    @keyframes featherDrift2 { 0%,100%{transform:translateX(0);} 50%{transform:translateX(3px);} }
+    @keyframes featherDrift3 { 0%,100%{transform:translateX(0);} 50%{transform:translateX(-2px);} }
+    .feather-wave-1 { animation: featherDrift1 3s ease-in-out infinite; }
+    .feather-wave-2 { animation: featherDrift2 3.4s ease-in-out infinite; }
+    .feather-wave-3 { animation: featherDrift3 2.8s ease-in-out infinite; }
+
+    /* Crest feathers */
+    @keyframes crestSway {
+      0%,100%{transform:rotate(0deg);}
+      50%{transform:rotate(-4deg);}
+    }
+    .crest { transform-origin: 210px 140px; animation: crestSway 3s ease-in-out infinite; }
+
+    /* Flames */
+    @keyframes flame1 { 0%,100%{opacity:0.7;transform:scaleY(1);} 50%{opacity:0.9;transform:scaleY(1.08);} }
+    @keyframes flame2 { 0%,100%{opacity:0.5;transform:scaleY(1);} 50%{opacity:0.7;transform:scaleY(1.12);} }
+    @keyframes flame3 { 0%,100%{opacity:0.35;transform:scaleY(1);} 50%{opacity:0.5;transform:scaleY(1.15);} }
+    .flame-1 { transform-origin: 210px 280px; animation: flame1 1.8s ease-in-out infinite; }
+    .flame-2 { transform-origin: 207px 280px; animation: flame2 2.1s ease-in-out infinite 0.2s; }
+    .flame-3 { transform-origin: 207px 280px; animation: flame3 2.4s ease-in-out infinite 0.4s; }
+
+    /* Embers */
+    @keyframes ember1 { 0%{opacity:0;transform:translate(0,0);} 50%{opacity:1;} 100%{opacity:0;transform:translate(-12px,-20px);} }
+    @keyframes ember2 { 0%{opacity:0;transform:translate(0,0);} 50%{opacity:0.8;} 100%{opacity:0;transform:translate(12px,-18px);} }
+    @keyframes ember3 { 0%{opacity:0;transform:translate(0,0);} 50%{opacity:0.6;} 100%{opacity:0;transform:translate(-8px,-22px);} }
+    .ember-1 { animation: ember1 2.5s ease-out infinite; }
+    .ember-2 { animation: ember2 3s ease-out infinite 0.8s; }
+    .ember-3 { animation: ember3 2.8s ease-out infinite 1.4s; }
+
+    /* Sparks */
+    @keyframes spark1 { 0%,100%{opacity:1;r:1.5;} 50%{opacity:0.3;r:0.5;} }
+    @keyframes spark2 { 0%,100%{opacity:0.5;r:1.2;} 50%{opacity:1;r:2;} }
+    @keyframes spark3 { 0%,100%{opacity:0.8;} 50%{opacity:0.2;} }
+    .spark-1 { animation: spark1 1.6s ease-in-out infinite; }
+    .spark-2 { animation: spark2 2s ease-in-out infinite 0.3s; }
+    .spark-3 { animation: spark3 1.8s ease-in-out infinite 0.6s; }
+
+    /* Eye glow */
+    @keyframes eyeGlow { 0%,100%{opacity:1;} 40%{opacity:0.3;} 60%{opacity:0.3;} }
+    .eye-glow { animation: eyeGlow 5s ease-in-out infinite; }
+
+    /* Ambient pulse */
+    @keyframes ambientPulse { 0%,100%{opacity:0.25;} 50%{opacity:0.1;} }
+    .bird-pulse { animation: ambientPulse 3s ease-in-out infinite; }
+
+    /* Tail feather group float */
+    @keyframes tailFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-4px);} }
+    .tail-feathers { animation: tailFloat 3s ease-in-out infinite; }
+
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      .nav-links { gap: 20px; }
+      .hero { padding: 100px 20px 60px; flex-direction: column; }
+      .phoenix-bird { width: 260px; height: 260px; }
+      .phoenix-bird svg { width: 260px; height: 260px; }
+      section { padding: 60px 20px; }
+      .finding-card { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .stats-bar { padding: 20px; gap: 32px; }
+      footer { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+
+  <nav>
+    <div class="nav-logo">PHO£NIX</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#findings">Findings</a></li>
+      <li><a href="#learning">Progress</a></li>
+      <li><a href="#programs">Programs</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-tag">Security Researcher</div>
+      <h1 class="hero-name">PHO<span class="pound">£</span>NIX</h1>
+      <div class="hero-title">// Bug Bounty Hunter &amp; CS Undergraduate</div>
+      <p class="hero-desc" id="heroDesc">
+        Hunting vulnerabilities across web applications. Learning offensive security through real-world programs on HackerOne, Bugcrowd, and Intigriti. Building from scratch — every bug is a lesson.<span class="cursor"></span>
+      </p>
+      <div class="hero-btns">
+        <a href="#findings" class="btn btn-primary">View Findings</a>
+        <a href="#learning" class="btn btn-outline">My Progress</a>
+      </div>
+    </div>
+
+    <!-- PHOENIX BIRD SVG ANIMATION -->
+    <div class="phoenix-bird" aria-hidden="true">
+      <svg viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg" width="420" height="420">
+        <defs>
+          <radialGradient id="glowCore" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#00ff88" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="#00ff88" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="glowStrong">
+            <feGaussianBlur stdDeviation="5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- Ambient glow behind bird -->
+        <circle cx="210" cy="200" r="110" fill="url(#glowCore)" class="bird-pulse"/>
+
+        <!-- TAIL FEATHERS — long sweeping lines from below body -->
+        <g class="tail-feathers" filter="url(#glow)">
+          <!-- Center tail -->
+          <path d="M210,290 Q200,360 195,410" stroke="#00ff88" stroke-width="1.5" fill="none" opacity="0.9" class="feather-wave-1"/>
+          <path d="M210,290 Q220,360 225,410" stroke="#00ff88" stroke-width="1.5" fill="none" opacity="0.9" class="feather-wave-1"/>
+          <!-- Left tail feathers -->
+          <path d="M205,295 Q185,355 170,400" stroke="#00cc66" stroke-width="1.2" fill="none" opacity="0.75" class="feather-wave-2"/>
+          <path d="M200,298 Q170,350 148,390" stroke="#00aa55" stroke-width="1" fill="none" opacity="0.6" class="feather-wave-3"/>
+          <path d="M196,300 Q155,345 126,378" stroke="#008844" stroke-width="0.8" fill="none" opacity="0.45" class="feather-wave-1"/>
+          <!-- Right tail feathers -->
+          <path d="M215,295 Q235,355 250,400" stroke="#00cc66" stroke-width="1.2" fill="none" opacity="0.75" class="feather-wave-2"/>
+          <path d="M220,298 Q250,350 272,390" stroke="#00aa55" stroke-width="1" fill="none" opacity="0.6" class="feather-wave-3"/>
+          <path d="M224,300 Q265,345 294,378" stroke="#008844" stroke-width="0.8" fill="none" opacity="0.45" class="feather-wave-1"/>
+          <!-- Ember sparks at tail tips -->
+          <circle cx="195" cy="408" r="1.5" fill="#00ff88" class="spark-1"/>
+          <circle cx="225" cy="408" r="1.5" fill="#00ff88" class="spark-2"/>
+          <circle cx="170" cy="398" r="1.2" fill="#00cc66" class="spark-3"/>
+          <circle cx="250" cy="398" r="1.2" fill="#00cc66" class="spark-3"/>
+        </g>
+
+        <!-- WINGS -->
+        <g class="wings" filter="url(#glow)">
+          <!-- Left wing — sweeping back shape -->
+          <path class="wing-left" d="M195,200 Q155,170 100,155 Q130,185 140,210 Q105,195 62,190 Q100,215 118,235 Q88,228 55,235 Q95,252 125,258 Q190,240 200,222 Z"
+            fill="none" stroke="#00ff88" stroke-width="1.4" opacity="0.85"/>
+          <!-- Left wing inner detail lines -->
+          <path d="M195,200 Q158,178 115,168" stroke="#00ff88" stroke-width="0.8" fill="none" opacity="0.5" class="feather-wave-2"/>
+          <path d="M192,208 Q152,192 110,188" stroke="#00ff88" stroke-width="0.7" fill="none" opacity="0.4" class="feather-wave-3"/>
+          <path d="M190,217 Q148,208 108,212" stroke="#00ff88" stroke-width="0.6" fill="none" opacity="0.3" class="feather-wave-1"/>
+
+          <!-- Right wing -->
+          <path class="wing-right" d="M225,200 Q265,170 320,155 Q290,185 280,210 Q315,195 358,190 Q320,215 302,235 Q332,228 365,235 Q325,252 295,258 Q230,240 220,222 Z"
+            fill="none" stroke="#00ff88" stroke-width="1.4" opacity="0.85"/>
+          <!-- Right wing inner detail lines -->
+          <path d="M225,200 Q262,178 305,168" stroke="#00ff88" stroke-width="0.8" fill="none" opacity="0.5" class="feather-wave-2"/>
+          <path d="M228,208 Q268,192 310,188" stroke="#00ff88" stroke-width="0.7" fill="none" opacity="0.4" class="feather-wave-3"/>
+          <path d="M230,217 Q272,208 312,212" stroke="#00ff88" stroke-width="0.6" fill="none" opacity="0.3" class="feather-wave-1"/>
+        </g>
+
+        <!-- BODY — elegant oval -->
+        <g filter="url(#glowStrong)">
+          <ellipse cx="210" cy="215" rx="22" ry="30" fill="none" stroke="#00ff88" stroke-width="1.8" class="body-pulse"/>
+          <!-- Body center glow fill -->
+          <ellipse cx="210" cy="215" rx="16" ry="22" fill="#00ff88" opacity="0.06" class="body-pulse"/>
+        </g>
+
+        <!-- NECK -->
+        <path d="M210,185 Q206,172 208,160" stroke="#00ff88" stroke-width="1.6" fill="none" filter="url(#glow)"/>
+
+        <!-- HEAD -->
+        <g filter="url(#glowStrong)">
+          <circle cx="210" cy="152" r="14" fill="none" stroke="#00ff88" stroke-width="1.6" class="body-pulse"/>
+          <circle cx="210" cy="152" r="8" fill="#00ff88" opacity="0.1" class="body-pulse"/>
+        </g>
+
+        <!-- BEAK -->
+        <path d="M218,148 L228,144 L220,152 Z" fill="#00ff88" opacity="0.9" filter="url(#glow)"/>
+
+        <!-- EYE -->
+        <circle cx="213" cy="148" r="2.5" fill="#00ff88" class="eye-glow"/>
+        <circle cx="213" cy="148" r="1.2" fill="#fff" opacity="0.9"/>
+
+        <!-- CREST FEATHERS on head -->
+        <g filter="url(#glow)" class="crest">
+          <path d="M205,140 Q198,120 200,105" stroke="#00ff88" stroke-width="1.2" fill="none" class="feather-wave-1"/>
+          <path d="M209,138 Q205,116 210,100" stroke="#00ff88" stroke-width="1.4" fill="none" class="feather-wave-2"/>
+          <path d="M213,139 Q214,118 220,103" stroke="#00ff88" stroke-width="1.2" fill="none" class="feather-wave-3"/>
+          <circle cx="200" cy="104" r="1.8" fill="#00ff88" class="spark-1"/>
+          <circle cx="210" cy="99" r="2" fill="#00ff88" class="spark-2"/>
+          <circle cx="220" cy="102" r="1.8" fill="#00ff88" class="spark-3"/>
+        </g>
+
+        <!-- FLAMES beneath body -->
+        <g class="flames" opacity="0.7">
+          <path d="M205,244 Q200,265 210,280 Q220,265 215,244" fill="none" stroke="#00ff88" stroke-width="1.2" class="flame-1"/>
+          <path d="M200,248 Q190,272 205,290 Q215,275 210,250" fill="none" stroke="#00cc66" stroke-width="1" opacity="0.7" class="flame-2"/>
+          <path d="M220,248 Q230,272 215,290 Q205,275 210,250" fill="none" stroke="#00cc66" stroke-width="1" opacity="0.7" class="flame-2"/>
+          <path d="M195,252 Q182,278 200,298 Q212,282 207,254" fill="none" stroke="#009944" stroke-width="0.8" opacity="0.5" class="flame-3"/>
+          <path d="M225,252 Q238,278 220,298 Q208,282 213,254" fill="none" stroke="#009944" stroke-width="0.8" opacity="0.5" class="flame-3"/>
+        </g>
+
+        <!-- Floating ember particles -->
+        <g class="embers">
+          <circle cx="160" cy="180" r="1.5" fill="#00ff88" class="ember-1"/>
+          <circle cx="260" cy="175" r="1.5" fill="#00ff88" class="ember-2"/>
+          <circle cx="145" cy="230" r="1" fill="#00cc66" class="ember-3"/>
+          <circle cx="275" cy="225" r="1" fill="#00cc66" class="ember-1"/>
+          <circle cx="170" cy="260" r="1.2" fill="#00ff88" class="ember-2"/>
+          <circle cx="250" cy="255" r="1.2" fill="#00ff88" class="ember-3"/>
+          <circle cx="190" cy="310" r="1" fill="#00aa55" class="ember-1"/>
+          <circle cx="230" cy="315" r="1" fill="#00aa55" class="ember-2"/>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bar" id="statsBar">
+    <div class="stat">
+      <span class="stat-val" id="statBugs">0</span>
+      <span class="stat-label">Bugs Found</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val" id="statPrograms">0</span>
+      <span class="stat-label">Programs Tested</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val" id="statSkills">0</span>
+      <span class="stat-label">Skills Tracked</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val" id="statHours">0</span>
+      <span class="stat-label">Hours Logged</span>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-header fade-up">
+      <div class="section-num">01 / About</div>
+      <h2 class="section-title">Who I Am</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="about-grid fade-up">
+      <div class="about-text" id="aboutText">
+        <p>I'm <strong>Phoenix</strong>, a final-year Computer Science undergraduate at LAUTECH, Nigeria, breaking into offensive security through bug bounty hunting.</p>
+        <p>My approach is hands-on: I test live programs, document every finding — valid or not — and treat each triage response as a learning opportunity. I'm currently focused on web app vulnerabilities: XSS, injection flaws, logic bugs, and recon.</p>
+        <p>This portfolio is a live record of my journey — updated as I find things, learn things, and grow.</p>
+      </div>
+      <div class="about-details">
+        <div class="detail-row"><div class="detail-key">STATUS</div><div class="detail-val">Active Hunter</div></div>
+        <div class="detail-row"><div class="detail-key">LOCATION</div><div class="detail-val">Nigeria</div></div>
+        <div class="detail-row"><div class="detail-key">UNIVERSITY</div><div class="detail-val">LAUTECH (CS, Final Year)</div></div>
+        <div class="detail-row"><div class="detail-key">PLATFORMS</div><div class="detail-val">HackerOne · Bugcrowd · Intigriti</div></div>
+        <div class="detail-row"><div class="detail-key">TOOLS</div><div class="detail-val">Burp Suite · Kali Linux</div></div>
+        <div class="detail-row"><div class="detail-key">FOCUS</div><div class="detail-val">Web App · Recon · XSS</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-header fade-up">
+      <div class="section-num">02 / Skills</div>
+      <h2 class="section-title">Technical Arsenal</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-grid fade-up" id="skillsGrid">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- FINDINGS -->
+  <section id="findings">
+    <div class="section-header fade-up">
+      <div class="section-num">03 / Findings</div>
+      <h2 class="section-title">Bug Bounty Findings</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="findings-list fade-up" id="findingsList">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- LEARNING PROGRESS -->
+  <section id="learning">
+    <div class="section-header fade-up">
+      <div class="section-num">04 / Progress</div>
+      <h2 class="section-title">Learning Roadmap</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="progress-grid fade-up" id="progressGrid">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- PROGRAMS -->
+  <section id="programs">
+    <div class="section-header fade-up">
+      <div class="section-num">05 / Programs</div>
+      <h2 class="section-title">Programs Tested</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="programs-grid fade-up" id="programsGrid">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-name">PHO£NIX</div>
+    <div class="footer-note">// Security Researcher in Training — Every bug teaches something</div>
+    <div class="footer-links">
+      <a href="https://github.com/phoenixxx224" target="_blank">GitHub</a>
+      <a href="admin.html">Admin</a>
+    </div>
+  </footer>
+
+  <script>
+    // ─── DEFAULT DATA ────────────────────────────────────────────────────────
+    const DEFAULT_DATA = {
+      stats: { bugs: 12, programs: 8, skills: 8, hours: 300 },
+      skills: [
+        { name: "Web App Testing", icon: "🌐", level: 55, desc: "XSS, injection, logic flaws. Testing on live programs via HackerOne and Bugcrowd." },
+        { name: "Recon & OSINT", icon: "🔍", level: 60, desc: "GitHub dorking, subdomain enumeration, CIDR scanning, metadata extraction." },
+        { name: "Burp Suite", icon: "🛠", level: 65, desc: "Intercept, repeat, intruder. Primary proxy tool for all manual testing." },
+        { name: "Kali Linux", icon: "🐧", level: 60, desc: "Primary operating system for security work. Command-line comfortable." },
+        { name: "JavaScript / XSS", icon: "⚡", level: 50, desc: "Understanding JS execution context, DOM, blind XSS payloads with js.rip." },
+        { name: "Network Fundamentals", icon: "📡", level: 55, desc: "TCP/IP, HTTP/S, DNS, CIDR ranges, packet analysis basics." },
+        { name: "API Testing", icon: "🔌", level: 45, desc: "REST API parameter tampering, GraphQL introspection, JSON manipulation." },
+        { name: "Report Writing", icon: "📝", level: 70, desc: "Clear vulnerability documentation: impact, steps to reproduce, evidence." }
+      ],
+      findings: [
+        {
+          title: "Stored HTML Injection / Blind XSS — Account Name Fields",
+          program: "Trip.com",
+          platform: "HackerOne",
+          severity: "medium",
+          status: "submitted",
+          date: "2025",
+          desc: "HTML injection via localFirstName/localLastName in the saveUserInfo API. Blind XSS payload deployed via js.rip. returnCode:0 confirmed payload stored on us.trip.com."
+        },
+        {
+          title: "Reflected Parameter in __NEXT_DATA__ — curr Parameter",
+          program: "Trip.com",
+          platform: "HackerOne",
+          severity: "low",
+          status: "submitted",
+          date: "2025",
+          desc: "The curr query parameter is reflected unsanitized into the __NEXT_DATA__ JSON blob on response pages. Low severity, no direct execution path confirmed."
+        },
+        {
+          title: "Stored HTML Injection — Trip Moments Title/Body",
+          program: "Trip.com",
+          platform: "HackerOne",
+          severity: "low",
+          status: "submitted",
+          date: "2025",
+          desc: "HTML stored raw in __NEXT_DATA__ via Trip Moments title and body fields. HTML-encoded at render, limiting exploitability, but injection point confirmed."
+        },
+        {
+          title: "AWS Infrastructure Disclosure via GitHub Repo",
+          program: "Infinite Athlete",
+          platform: "Bugcrowd",
+          severity: "medium",
+          status: "informative",
+          date: "2025",
+          desc: "Hardcoded AWS account ID, IAM role ARNs, CloudFront distribution ID, and internal API URL discovered in the tempus-ex GitHub organisation. Closed as N/A by triage; appeal filed."
+        },
+        {
+          title: "Unvalidated Redirect in Password Reset — destination Param",
+          program: "Infinite Athlete",
+          platform: "Bugcrowd",
+          severity: "low",
+          status: "submitted",
+          date: "2025",
+          desc: "Password reset endpoint accepted arbitrary external URLs in the destination parameter without validation, enabling open redirect."
+        },
+        {
+          title: "Unauthenticated API Key Exposure Enables Write Access to Production AI Infrastructure",
+          program: "AS Watson / Watsons",
+          platform: "Intigriti",
+          severity: "high",
+          status: "informative",
+          date: "2026",
+          desc: "Guest OAuth token exposes a 76KB config endpoint returning production API keys including a Kong gateway key granting unauthenticated write access to AI/personalization pipelines across all AS Watson regional sites. Closed as duplicate — another researcher found it first."
+        },
+        {
+          title: "Hardcoded AES-256-CBC Keys in Public JS Bundle Expose Employee PII",
+          program: "AS Watson / Marionnaud",
+          platform: "Intigriti",
+          severity: "high",
+          status: "informative",
+          date: "2026",
+          desc: "AES-256-CBC key and IV hardcoded in a public JS bundle. The decryptUser function confirms these keys wrap email, name, phone, position, role, and password fields for a legally mandated BDESE HR platform covering 8 EU countries. Closed as N/A — triager required live PII extraction as proof."
+        },
+        {
+          title: "Publicly Accessible Internal Geocoder Testing Tool Running EOL Software Stack",
+          program: "HERE Technologies",
+          platform: "Intigriti",
+          severity: "medium",
+          status: "informative",
+          date: "2026",
+          desc: "Internal geocoder testing tool publicly accessible with no auth. Runs EOL Apache 2.4.6, PHP 5.4.16, and Yii 1.x. Open directory listings, version disclosure, internal contact email, and HTTP 500 via array injection. Closed OOS — program scope restricted to Log4J/Spring4Shell only."
+        },
+        {
+          title: "Business Logic Flaw and Improper Access Control in OData API — Systemic Metadata Disclosure",
+          program: "Water-Link",
+          platform: "Intigriti",
+          severity: "medium",
+          status: "informative",
+          date: "2026",
+          desc: "OData API exposes SAP SubAccount ID, internal IASLink portal, and enables email oracle via differential error codes (400 vs null). Mass scraping of internal lookup tables possible unauthenticated. Closed OOS — tested domain mijnwater-link.be not in *.water-link.be scope."
+        },
+        {
+          title: "Unauthenticated Employee Photo Disclosure and Email Oracle via /api/images/contactPersons",
+          program: "Delen Private Bank",
+          platform: "Intigriti",
+          severity: "medium",
+          status: "informative",
+          date: "2026",
+          desc: "Unauthenticated endpoint returns employee profile photos given an email address. HTTP 200/404 differential enables employee directory enumeration. No rate limiting. Closed N/A — endpoint is by design; email enumeration explicitly OOS."
+        },
+        {
+          title: "Staff PII Exposure (Names & User IDs) in Unauthenticated Page Source",
+          program: "Jessa Ziekenhuis / MijnJessa",
+          platform: "Intigriti",
+          severity: "high",
+          status: "informative",
+          date: "2026",
+          desc: "Liferay CMS serializes admin metadata including full staff names and internal user IDs into public page source with no authentication. Real hospital staff records confirmed. GDPR Article 4(1) breach on staging environment. Closed informative — JSONWS API access controls intact."
+        },
+        {
+          title: "Unauthenticated Swagger/OpenAPI Documentation Exposure on Production API Backend",
+          program: "House of HR / Continu",
+          platform: "Intigriti",
+          severity: "medium",
+          status: "informative",
+          date: "2026",
+          desc: "Production backend API for connect.continu.nl exposes full Swagger/OpenAPI docs to unauthenticated users. Reveals complete endpoint inventory, PII field schemas, Auth0 architecture, OAuth2 token endpoint, and internal namespace structure. Closed informative — no direct exploitable impact demonstrated."
+        },
+        {
+          title: "Unauthenticated S3 Bucket Metadata Exposure (Object Names, Sizes, Timestamps)",
+          program: "DPG Media / De Volkskrant",
+          platform: "Intigriti",
+          severity: "medium",
+          status: "informative",
+          date: "2026",
+          desc: "S3 bucket ListBucket returns XML metadata including object keys, file sizes, and timestamps without authentication. Objects themselves return 403. Reveals internal file naming, directory structure, and update timelines. Closed N/A — access denied response seen as insufficient impact."
+        }
+      ],
+      progress: [
+        { name: "Web Application Hacking", pct: 55, note: "Core methodology solid. Continuing to refine logic testing and chaining." },
+        { name: "XSS & Injection Techniques", pct: 60, note: "Stored, reflected, DOM, and blind XSS. Actively practicing." },
+        { name: "Recon Methodology", pct: 65, note: "GitHub dorking, subdomain discovery, CIDR/network recon." },
+        { name: "Burp Suite Proficiency", pct: 65, note: "Intercept, repeater, intruder workflows comfortable. Extensions next." },
+        { name: "API Security Testing", pct: 45, note: "REST and GraphQL basics. Building toward advanced testing." },
+        { name: "Network Security", pct: 50, note: "TCP/IP fundamentals covered at AppClick. Deepening packet analysis." },
+        { name: "Report Writing", pct: 75, note: "Multiple reports submitted. Improving impact articulation." },
+        { name: "OWASP Top 10", pct: 60, note: "Formal training + practical application across programs." }
+      ],
+      programs: [
+        { name: "Trip.com", platform: "HackerOne", desc: "Travel booking platform. Focused on account fields, booking flows, and API parameter testing.", tags: ["Web App", "API", "XSS", "Active"] },
+        { name: "Infinite Athlete", platform: "Bugcrowd", desc: "Sports tech company. Unauthenticated-only scope. GitHub recon and password reset flows tested.", tags: ["Recon", "API", "Unauthenticated"] },
+        { name: "The Hut Group", platform: "Bugcrowd", desc: "cultbeauty.co.uk. GraphQL API testing — found user classification oracle via unauthenticated query.", tags: ["GraphQL", "API", "Web App"] },
+        { name: "Hilton Hotels", platform: "HackerOne", desc: "Hospitality brand. Recon session across CIDR ranges. Network scanning and subdomain enumeration.", tags: ["Recon", "Network", "CIDR"] },
+        { name: "AS Watson / Watsons + Marionnaud", platform: "Intigriti", desc: "Two findings: hardcoded AES keys in a public JS bundle (Marionnaud BDESE) and exposed Kong API key enabling write access to AI infrastructure (Watsons HK).", tags: ["JS Analysis", "API Keys", "Crypto", "PII"] },
+        { name: "HERE Technologies", platform: "Intigriti", desc: "EOL software stack on internal geocoder tool. Apache 2.4.6, PHP 5.4.16, Yii 1.x — open directory listings and type confusion errors.", tags: ["Recon", "EOL Software", "Info Disclosure"] },
+        { name: "Water-Link / Delen / Jessa / House of HR / DPG Media", platform: "Intigriti", desc: "Five European programs — OData API logic flaws, employee photo oracle, hospital staff PII in page source, Swagger exposure, and S3 metadata listing.", tags: ["OData", "API", "GDPR", "Info Disclosure", "S3"] }
+      ]
+    };
+
+    // ─── LOAD DATA ────────────────────────────────────────────────────────────
+    function loadData() {
+      try {
+        const raw = localStorage.getItem('phoenix_portfolio_data');
+        return raw ? JSON.parse(raw) : DEFAULT_DATA;
+      } catch(e) {
+        return DEFAULT_DATA;
+      }
+    }
+
+    // ─── RENDER ───────────────────────────────────────────────────────────────
+    function render() {
+      const d = loadData();
+
+      // Stats
+      animateCount('statBugs', d.stats.bugs);
+      animateCount('statPrograms', d.stats.programs);
+      animateCount('statSkills', d.stats.skills);
+      animateCount('statHours', d.stats.hours);
+
+      // Skills
+      const sg = document.getElementById('skillsGrid');
+      if (d.skills.length === 0) {
+        sg.innerHTML = '<div class="empty-state">// No skills logged yet</div>';
+      } else {
+        sg.innerHTML = d.skills.map(s => `
+          <div class="skill-card">
+            <div class="skill-icon">${s.icon}</div>
+            <div class="skill-name">${s.name}</div>
+            <div class="skill-level"><div class="skill-level-fill" style="width:0%" data-w="${s.level}%"></div></div>
+            <div class="skill-desc">${s.desc}</div>
+          </div>
+        `).join('');
+      }
+
+      // Findings
+      const fl = document.getElementById('findingsList');
+      const sevMap = { critical:'critical', high:'high', medium:'medium', low:'low', info:'info' };
+      const statusMap = { submitted:'submitted', triaged:'triaged', resolved:'resolved', informative:'informative', na:'na' };
+      if (d.findings.length === 0) {
+        fl.innerHTML = '<div class="empty-state">// No findings documented yet</div>';
+      } else {
+        fl.innerHTML = d.findings.map((f,i) => `
+          <a class="finding-card" href="report.html?id=${i}" style="text-decoration:none;color:inherit;">
+            <div class="finding-severity"><span class="sev-badge sev-${sevMap[f.severity]||'info'}">${f.severity}</span></div>
+            <div class="finding-body">
+              <div class="finding-title">${f.title}</div>
+              <div class="finding-meta">
+                <span>${f.program}</span> · ${f.platform} · ${f.date}
+              </div>
+              <div class="finding-desc">${f.desc}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;">
+              <span class="finding-status status-${statusMap[f.status]||'submitted'}">${f.status}</span>
+              <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);letter-spacing:1px;">READ REPORT →</span>
+            </div>
+          </a>
+        `).join('');
+      }
+
+      // Progress
+      const pg = document.getElementById('progressGrid');
+      if (d.progress.length === 0) {
+        pg.innerHTML = '<div class="empty-state">// No progress items yet</div>';
+      } else {
+        pg.innerHTML = d.progress.map(p => `
+          <div class="progress-card">
+            <div class="progress-header">
+              <div class="progress-name">${p.name}</div>
+              <div class="progress-pct">${p.pct}%</div>
+            </div>
+            <div class="progress-bar-track"><div class="progress-bar-fill" style="width:0%" data-w="${p.pct}%"></div></div>
+            <div class="progress-note">${p.note}</div>
+          </div>
+        `).join('');
+      }
+
+      // Programs
+      const pgr = document.getElementById('programsGrid');
+      if (d.programs.length === 0) {
+        pgr.innerHTML = '<div class="empty-state">// No programs listed yet</div>';
+      } else {
+        pgr.innerHTML = d.programs.map(p => `
+          <div class="program-card">
+            <div class="program-platform">${p.platform}</div>
+            <div class="program-name">${p.name}</div>
+            <div class="program-desc">${p.desc}</div>
+            <div class="program-tags">${(p.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+          </div>
+        `).join('');
+      }
+
+      // Animate bars on scroll
+      setTimeout(animateBars, 200);
+    }
+
+    function animateCount(id, target) {
+      const el = document.getElementById(id);
+      let current = 0;
+      const step = target / 40;
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = Math.round(current) + (id === 'statHours' ? '+' : '');
+        if (current >= target) clearInterval(timer);
+      }, 30);
+    }
+
+    function animateBars() {
+      document.querySelectorAll('[data-w]').forEach(el => {
+        el.style.width = el.dataset.w;
+      });
+    }
+
+    // ─── INTERSECTION OBSERVER ────────────────────────────────────────────────
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          // Animate bars when they appear
+          e.target.querySelectorAll('[data-w]').forEach(el => {
+            setTimeout(() => { el.style.width = el.dataset.w; }, 200);
+          });
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+
+    // ─── INIT ─────────────────────────────────────────────────────────────────
+    render();
+  </script>
+</body>
+</html>
